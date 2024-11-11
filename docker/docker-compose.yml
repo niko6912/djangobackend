@@ -1,0 +1,30 @@
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: gunicorn --bind 0.0.0.0:8000 core.wsgi:application
+    volumes:
+      - ..:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_PRODUCTION=True
+      - DJANGO_ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
+      - CORS_ALLOWED_ORIGINS=https://your-nextjs-domain.com
+
+  lint:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: flake8 .
+    volumes:
+      - ..:/app
+
+  format:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: black .
+    volumes:
+      - ..:/app
